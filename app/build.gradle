@@ -79,4 +79,5 @@ dependencies {
 
     implementation "com.github.skydoves:landscapist-glide:$compose_glide_version"
 
+    implementation "com.google.accompanist:accompanist-flowlayout:$compose_flowlayout_version"
 }

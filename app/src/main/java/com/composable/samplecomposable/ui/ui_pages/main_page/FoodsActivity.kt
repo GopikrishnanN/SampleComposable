@@ -33,6 +33,7 @@ import com.composable.samplecomposable.ui.ui_pages.main_page.home_page.HomeScree
 import com.composable.samplecomposable.ui.ui_pages.main_page.home_page.SurfaceView
 import com.composable.samplecomposable.ui.ui_pages.main_page.profile_page.ProfileScreen
 import com.composable.samplecomposable.ui.ui_pages.main_page.search_page.SearchScreen
+import com.composable.samplecomposable.ui.ui_pages.main_page.search_page.SearchSurfaceView
 import kotlin.math.roundToInt
 
 class FoodsActivity : ComponentActivity() {
@@ -70,7 +71,7 @@ fun ScaffoldView() {
 fun NavBody(navController: NavHostController) {
     NavHost(navController = navController, startDestination = "home") {
         composable("home") { SurfaceView() }
-        composable("categories") { SearchScreen("Categories Screen") }
+        composable("categories") { SearchSurfaceView() }
         composable("cart") { CartScreen("Cart Screen") }
         composable("billing") { BillingScreen("Billing Screen") }
         composable("account") { ProfileScreen("Account Screen") }

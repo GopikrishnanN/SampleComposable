@@ -3,11 +3,11 @@ package com.composable.samplecomposable.ui.ui_pages.main_page.home_page
 import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -20,31 +20,34 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImagePainter
 import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
 import com.composable.samplecomposable.R
 import com.composable.samplecomposable.ui.base.BaseUIActivity
 import com.composable.samplecomposable.ui.theme.SampleComposableTheme
+import com.google.accompanist.flowlayout.FlowColumn
+import com.google.accompanist.flowlayout.FlowMainAxisAlignment
+import com.google.accompanist.flowlayout.FlowRow
+import com.google.accompanist.flowlayout.SizeMode
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
@@ -78,7 +81,7 @@ fun HomeTopBar() {
 }
 
 @SuppressLint("CoroutineCreationDuringComposition")
-@OptIn(ExperimentalPagerApi::class)
+@OptIn(ExperimentalPagerApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun HomeBody() {
 
@@ -156,221 +159,237 @@ fun HomeBody() {
     courseList = courseList + ListModal("Tiffin", R.drawable.ic_food_backside_icon)
     courseList = courseList + ListModal("Juice", R.drawable.ic_food_backside_icon)
 
-
-    Column(
-        modifier = Modifier.height(screenHeight.dp), horizontalAlignment = Alignment.Start
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.Start,
     ) {
-        Spacer(modifier = Modifier.height(8.dp))
-        HorizontalPager(
-            count = 5,
-            state = state,
-            contentPadding = PaddingValues(start = 8.dp, end = 24.dp),
-            modifier = modifierPager
-        ) { page ->
-            Row {
-                Card(
-                    backgroundColor = Color.White,
-                    modifier = modifierBanner.padding(horizontal = 8.dp),
-                    shape = RoundedCornerShape(12.dp),
-                ) {
-                    Image(
-                        painter = items[page],
-                        contentDescription = "items[$page]",
-                        modifier = modifierBanner,
-                        contentScale = ContentScale.FillBounds,
-                        alignment = Alignment.Center
-                    )
-                }
-                Spacer(modifier = Modifier.width(8.dp))
-            }
-        }
-        Spacer(modifier = Modifier.height(8.dp))
-        SearchBar()
-        Spacer(modifier = Modifier.height(12.dp))
-        Column(modifier = Modifier.padding(horizontal = 20.dp)) {
-            Text(
-                text = "All Products", textAlign = TextAlign.Start, style = TextStyle(
-                    fontWeight = FontWeight.SemiBold, color = colorResource(id = R.color.black)
-                )
-            )
-            Spacer(modifier = Modifier.height(12.dp))
-            LazyRow {
-                items(courseList.size) { count ->
-                    Column(
-                        modifier = Modifier.align(Alignment.CenterHorizontally),
-                        horizontalAlignment = Alignment.CenterHorizontally
+        item {
+            Spacer(modifier = Modifier.height(8.dp))
+            HorizontalPager(
+                count = 5,
+                state = state,
+                contentPadding = PaddingValues(start = 8.dp, end = 24.dp),
+                modifier = modifierPager
+            ) { page ->
+                Row {
+                    Card(
+                        backgroundColor = Color.White,
+                        modifier = modifierBanner.padding(horizontal = 8.dp),
+                        shape = RoundedCornerShape(12.dp),
                     ) {
                         Image(
-                            painter = painterResource(id = courseList[count].languageImg),
-                            contentDescription = "items[$count]",
-                            modifier = Modifier
-                                .width(width = 70.dp)
-                                .height(height = 70.dp),
+                            painter = items[page],
+                            contentDescription = "items[$page]",
+                            modifier = modifierBanner,
                             contentScale = ContentScale.FillBounds,
                             alignment = Alignment.Center
                         )
-                        Spacer(modifier = Modifier.width(5.dp))
-                        Text(
-                            text = courseList[count].languageName,
-                            style = TextStyle(color = Color.Black),
-                            textAlign = TextAlign.Center,
-                        )
                     }
-                    Spacer(modifier = Modifier.width(5.dp))
+                    Spacer(modifier = Modifier.width(8.dp))
                 }
             }
             Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = "Most popular", textAlign = TextAlign.Start, style = TextStyle(
-                    fontWeight = FontWeight.SemiBold, color = colorResource(id = R.color.black)
-                )
-            )
+            SearchBar()
             Spacer(modifier = Modifier.height(12.dp))
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2)
-            ) {
-                items(10) {
-                    BoxWithConstraints {
-                        Box(modifier = Modifier.padding(5.dp)) {
-                            Card(
-                                modifier = Modifier.fillMaxWidth(),
-                                backgroundColor = colorResource(id = R.color.white),
-                                elevation = 6.dp,
-                            ) {
-                                Column {
-                                    SubcomposeAsyncImage(
-                                        model = "https://www.freepnglogos.com/uploads/burger-png/burger-png-png-images-yellow-images-12.png",
-                                        loading = {
-//                                        if (painter.state is AsyncImagePainter.State.Loading || painter.state is AsyncImagePainter.State.Error) {
-//                                            CircularProgressIndicator(color = colorResource(id = R.color.black))
-//                                        } else {
-                                            SubcomposeAsyncImageContent(painter = painterResource(id = R.drawable.tuk_in_logo))
-//                                        }
-                                        },
-                                        contentDescription = "image",
-                                        modifier = Modifier
-                                            .size(100.dp)
-                                            .align(alignment = Alignment.CenterHorizontally),
-                                    )
-                                    Text(
-                                        text = "Bacon Burger",
-                                        style = TextStyle(
-                                            fontWeight = FontWeight.Black,
-                                            color = colorResource(id = R.color.black),
-                                            fontSize = 14.sp,
-                                        ),
-                                        modifier = Modifier.padding(horizontal = 10.dp),
-                                    )
-                                    Text(
-                                        text = "yahoo camida",
-                                        style = TextStyle(
-                                            fontWeight = FontWeight.Normal,
-                                            color = colorResource(id = R.color.black).copy(.5F),
-                                            fontSize = 12.sp,
-                                        ),
-                                        modifier = Modifier.padding(horizontal = 10.dp),
-                                    )
-                                    Spacer(modifier = Modifier.height(6.dp))
-                                    val offersAmountText = buildAnnotatedString {
-                                        withStyle(
-                                            style = SpanStyle(
-                                                Color.Black, fontSize = 14.sp
-                                            )
-                                        ) {
-                                            append("   ₹ 150")
-                                        }
-                                        withStyle(
-                                            style = SpanStyle(
-                                                Color.Red,
-                                                fontSize = 13.sp,
-                                                fontWeight = FontWeight.SemiBold,
-                                            )
-                                        ) {
-                                            append(" 40% off")
-                                        }
-                                    }
-                                    Spacer(modifier = Modifier.height(5.dp))
-                                    Row {
-                                        Text(text = offersAmountText)
-                                        Spacer(modifier = Modifier.width(5.dp))
-                                        Box(
-                                            modifier = Modifier.border(
-                                                width = .5.dp,
-                                                shape = RoundedCornerShape(5.dp),
-                                                brush = Brush.horizontalGradient(
-                                                    listOf(
-                                                        Color.Black.copy(.5f), Color.Black.copy(.5f)
-                                                    )
-                                                )
-                                            )
-                                        ) {
-                                            Text(
-                                                text = "Add",
-                                                style = TextStyle(
-                                                    color = Color.Green,
-                                                    fontSize = 10.sp,
-                                                    fontWeight = FontWeight.Light,
-                                                ),
-                                                modifier = Modifier.padding(
-                                                    horizontal = 5.dp, vertical = 2.dp
-                                                ),
-                                            )
-                                        }
-                                    }
-                                    Spacer(modifier = Modifier.height(12.dp))
-                                }
-                            }
-
-                        }
-                        BoxWithConstraints {
+            Column(modifier = Modifier.padding(horizontal = 20.dp)) {
+                Text(
+                    text = "All Products", textAlign = TextAlign.Start, style = TextStyle(
+                        fontWeight = FontWeight.SemiBold, color = colorResource(id = R.color.black)
+                    )
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+                LazyRow {
+                    items(courseList.size) { count ->
+                        Column(
+                            modifier = Modifier.align(Alignment.CenterHorizontally),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
                             Image(
-                                painter = painterResource(id = R.drawable.ic_tag_icon),
-                                contentDescription = "ic_tag_icon",
+                                painter = painterResource(id = courseList[count].languageImg),
+                                contentDescription = "items[$count]",
                                 modifier = Modifier
-                                    .width(width = 90.dp)
-                                    .height(height = 25.dp),
+                                    .width(width = 70.dp)
+                                    .height(height = 70.dp),
                                 contentScale = ContentScale.FillBounds,
                                 alignment = Alignment.Center
                             )
-                            val bestSellerText = buildAnnotatedString {
-                                withStyle(
-                                    style = SpanStyle(
-                                        Color.White,
-                                        fontSize = 10.sp,
-                                        fontWeight = FontWeight.SemiBold,
-                                    ),
-                                ) {
-                                    append("BEST")
-                                }
-                                withStyle(
-                                    style = SpanStyle(
-                                        Color.White,
-                                        fontSize = 10.sp,
-                                        fontWeight = FontWeight.SemiBold,
-                                    )
-                                ) {
-                                    append(" SELLER")
-                                }
-                            }
-
+                            Spacer(modifier = Modifier.width(5.dp))
                             Text(
-                                text = bestSellerText,
-                                modifier = Modifier.padding(start = 8.dp, top = 5.dp),
-                                style = TextStyle(color = Color.White, fontSize = 10.sp)
+                                text = courseList[count].languageName,
+                                style = TextStyle(color = Color.Black),
+                                textAlign = TextAlign.Center,
                             )
+                        }
+                        Spacer(modifier = Modifier.width(5.dp))
+                    }
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+        }
+        item {
+            Column(modifier = Modifier.padding(horizontal = 20.dp)) {
+                Text(
+                    text = "Most popular", textAlign = TextAlign.Start, style = TextStyle(
+                        fontWeight = FontWeight.SemiBold, color = colorResource(id = R.color.black)
+                    )
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+                LazyRow {
+                    items(10) { count ->
+                        BoxWithConstraints {
+                            Box(modifier = Modifier.padding(5.dp)) {
+                                Card(
+                                    modifier = Modifier.width((screenWidth * .45).dp),
+                                    backgroundColor = colorResource(id = R.color.white),
+                                    elevation = 6.dp,
+                                ) {
+                                    Column {
+                                        Spacer(modifier = Modifier.height(8.dp))
+                                        SubcomposeAsyncImage(
+                                            model = "https://www.freepnglogos.com/uploads/burger-png/burger-png-png-images-yellow-images-12.png",
+                                            loading = {
+//                                        if (painter.state is AsyncImagePainter.State.Loading || painter.state is AsyncImagePainter.State.Error) {
+//                                            CircularProgressIndicator(color = colorResource(id = R.color.black))
+//                                        } else {
+                                                SubcomposeAsyncImageContent(
+                                                    painter = painterResource(
+                                                        id = R.drawable.tuk_in_logo
+                                                    )
+                                                )
+//                                        }
+                                            },
+                                            contentDescription = "$count",
+                                            modifier = Modifier
+                                                .size(120.dp)
+                                                .align(alignment = Alignment.CenterHorizontally),
+                                        )
+                                        Text(
+                                            text = "Bacon Burger",
+                                            style = TextStyle(
+                                                fontWeight = FontWeight.Black,
+                                                color = colorResource(id = R.color.black),
+                                                fontSize = 14.sp,
+                                            ),
+                                            modifier = Modifier.padding(horizontal = 10.dp),
+                                        )
+                                        Text(
+                                            text = "yahoo camida",
+                                            style = TextStyle(
+                                                fontWeight = FontWeight.Normal,
+                                                color = colorResource(id = R.color.black).copy(.5F),
+                                                fontSize = 12.sp,
+                                            ),
+                                            modifier = Modifier.padding(horizontal = 10.dp),
+                                        )
+                                        Spacer(modifier = Modifier.height(6.dp))
+                                        val offersAmountText =
+                                            androidx.compose.ui.text.buildAnnotatedString {
+                                                withStyle(
+                                                    style = androidx.compose.ui.text.SpanStyle(
+                                                        Color.Black, fontSize = 14.sp
+                                                    )
+                                                ) {
+                                                    append("   ₹ 150")
+                                                }
+                                                withStyle(
+                                                    style = androidx.compose.ui.text.SpanStyle(
+                                                        Color.Red,
+                                                        fontSize = 13.sp,
+                                                        fontWeight = FontWeight.SemiBold,
+                                                    )
+                                                ) {
+                                                    append(" 40% off")
+                                                }
+                                            }
+                                        Spacer(modifier = Modifier.height(5.dp))
+                                        Row {
+                                            Text(text = offersAmountText)
+                                            Spacer(modifier = Modifier.width(5.dp))
+                                            Box(
+                                                modifier = Modifier.border(
+                                                    width = .5.dp,
+                                                    shape = RoundedCornerShape(2.dp),
+                                                    brush = androidx.compose.ui.graphics.Brush.horizontalGradient(
+                                                        listOf(
+                                                            Color.Black.copy(.5f),
+                                                            Color.Black.copy(.5f)
+                                                        )
+                                                    )
+                                                )
+                                            ) {
+                                                Text(
+                                                    text = "ADD",
+                                                    style = TextStyle(
+                                                        color = Color(0xff3b732e),
+                                                        fontSize = 10.sp,
+                                                        fontWeight = FontWeight.Medium,
+                                                    ),
+                                                    modifier = Modifier.padding(
+                                                        horizontal = 10.dp, vertical = 2.dp
+                                                    ),
+                                                )
+                                            }
+                                        }
+                                        Spacer(modifier = Modifier.height(12.dp))
+                                    }
+                                }
+
+                            }
+                            BoxWithConstraints {
+                                Image(
+                                    painter = painterResource(id = R.drawable.ic_tag_icon),
+                                    contentDescription = "ic_tag_icon",
+                                    modifier = Modifier
+                                        .width(width = 90.dp)
+                                        .height(height = 25.dp),
+                                    contentScale = ContentScale.FillBounds,
+                                    alignment = Alignment.Center
+                                )
+                                val bestSellerText = androidx.compose.ui.text.buildAnnotatedString {
+                                    withStyle(
+                                        style = androidx.compose.ui.text.SpanStyle(
+                                            Color.White,
+                                            fontSize = 10.sp,
+                                            fontWeight = FontWeight.SemiBold,
+                                        ),
+                                    ) {
+                                        append("BEST")
+                                    }
+                                    withStyle(
+                                        style = androidx.compose.ui.text.SpanStyle(
+                                            Color.White,
+                                            fontSize = 10.sp,
+                                            fontWeight = FontWeight.SemiBold,
+                                        )
+                                    ) {
+                                        append(" SELLER")
+                                    }
+                                }
+
+                                Text(
+                                    text = bestSellerText, modifier = Modifier.padding(
+                                        start = 8.dp, top = 5.dp
+                                    ), style = TextStyle(
+                                        color = Color.White, fontSize = 10.sp
+                                    )
+                                )
+                            }
                         }
                     }
                 }
             }
         }
-        Spacer(modifier = Modifier.height(8.dp))
+        item {
+            Spacer(modifier = Modifier.height(8.dp))
+        }
     }
 }
 
 @Composable
 fun SearchBar() {
     var textState by rememberSaveable { mutableStateOf("") }
-    CustomTextField(text = textState,
+    CustomTextField(
+        text = textState,
         onValueChange = { textState = it },
         leadingIcon = {
             Icon(
