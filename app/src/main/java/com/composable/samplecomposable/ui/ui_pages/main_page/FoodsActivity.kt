@@ -72,7 +72,7 @@ fun NavBody(navController: NavHostController) {
     NavHost(navController = navController, startDestination = "home") {
         composable("home") { SurfaceView() }
         composable("categories") { SearchSurfaceView() }
-        composable("cart") { CartScreen("Cart Screen") }
+        composable("cart") { CartScreen() }
         composable("billing") { BillingScreen("Billing Screen") }
         composable("account") { ProfileScreen("Account Screen") }
     }
