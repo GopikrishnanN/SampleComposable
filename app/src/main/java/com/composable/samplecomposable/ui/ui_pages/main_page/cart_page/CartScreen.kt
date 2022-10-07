@@ -122,7 +122,7 @@ fun SummeryView() {
             Text(text = "Total price", style = boldTextStyle)
             Text(text = "₹ 450.00", style = boldTextStyle)
         }
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(35.dp))
         Button(
             onClick = {
 
@@ -131,8 +131,7 @@ fun SummeryView() {
             shape = RoundedCornerShape(5.dp),
             modifier = Modifier
                 .fillMaxWidth()
-                .height(40.dp)
-                .padding(end = 20.dp),
+                .height(40.dp),
         ) {
             Text(
                 text = "Pay Now",
@@ -141,6 +140,7 @@ fun SummeryView() {
                 textAlign = TextAlign.Center,
             )
         }
+        Spacer(modifier = Modifier.height(60.dp))
     }
 }
 
