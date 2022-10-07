@@ -52,7 +52,7 @@ fun CartBody() {
 //    val activity = (LocalContext.current as? Activity)
 //    val mContext = LocalContext.current
     LazyColumn {
-        items(count = 4) {
+        items(count = 5) {
             CartItems()
         }
         item {
